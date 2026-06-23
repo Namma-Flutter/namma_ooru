@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Namma Ooru uses the camera to capture photos of civic issues you want to report.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Namma Ooru needs your location to attach it to your civic issue reports.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
