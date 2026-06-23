@@ -57,16 +57,14 @@ class _ReportListScreenState extends State<ReportListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Reports'),
-      ),
+      appBar: AppBar(title: const Text('My Reports')),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final result = await Navigator.push<bool>(
             context,
             MaterialPageRoute(builder: (_) => const NewReportScreen()),
           );
-          if (result == true && mounted) {
+          if (result == true && context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Report submitted successfully'),
@@ -80,48 +78,50 @@ class _ReportListScreenState extends State<ReportListScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _reports.isEmpty
-              ? EmptyStateWidget(
-                  icon: Icons.assignment_outlined,
-                  title: 'No reports yet',
-                  subtitle: 'Tap the + button to report a civic issue',
-                  buttonLabel: 'Create First Report',
-                  onButtonTap: () async {
-                    final result = await Navigator.push<bool>(
-                      context,
-                      MaterialPageRoute(builder: (_) => const NewReportScreen()),
-                    );
-                    if (result == true && mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Report submitted successfully'),
-                          behavior: SnackBarBehavior.floating,
+          ? EmptyStateWidget(
+              icon: Icons.assignment_outlined,
+              title: 'No reports yet',
+              subtitle: 'Tap the + button to report a civic issue',
+              buttonLabel: 'Create First Report',
+              onButtonTap: () async {
+                final result = await Navigator.push<bool>(
+                  context,
+                  MaterialPageRoute(builder: (_) => const NewReportScreen()),
+                );
+                if (result == true && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Report submitted successfully'),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              },
+            )
+          : RefreshIndicator(
+              onRefresh: _onRefresh,
+              child: ListView.separated(
+                padding: const EdgeInsets.all(AppSpacing.base),
+                itemCount: _reports.length,
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: AppSpacing.sm),
+                itemBuilder: (context, index) {
+                  final report = _reports[index];
+                  return _ReportListItem(
+                    report: report,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              ReportDetailScreen(reportId: report.id),
                         ),
                       );
-                    }
-                  },
-                )
-              : RefreshIndicator(
-                  onRefresh: _onRefresh,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(AppSpacing.base),
-                    itemCount: _reports.length,
-                    separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.sm),
-                    itemBuilder: (context, index) {
-                      final report = _reports[index];
-                      return _ReportListItem(
-                        report: report,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => ReportDetailScreen(reportId: report.id),
-                            ),
-                          );
-                        },
-                      );
                     },
-                  ),
-                ),
+                  );
+                },
+              ),
+            ),
     );
   }
 }
